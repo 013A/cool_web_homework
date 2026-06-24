@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>我的個人網站</title>
+
+    <style>
+
+        body{
+            font-family: Arial;
+            background:#f5f5f5;
+            margin:30px;
+        }
+
+        .container{
+            max-width:800px;
+            margin:auto;
+            background:white;
+            padding:20px;
+            border-radius:10px;
+        }
+
+        h1{
+            text-align:center;
+        }
+
+        .todoItem{
+            display:inline;
+            padding:0 10px;
+        }
+
+        .checkbox:checked + .todoItem{
+            text-decoration:line-through;
+        }
+
+        button{
+            margin:5px;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+    <h1>我的個人網站</h1>
+
+    <hr>
+
+    <h2>個人介紹</h2>
+
+    <p><b>姓名：</b>羅于烜</p>
+
+    <p><b>學校：</b>亞洲大學</p>
+
+    <p><b>科系：</b>資訊工程系</p>
+
+    <h3>興趣</h3>
+
+    <ul>
+        <li>旅遊</li>
+        <li>打球</li>
+        <li>聽歌</li>
+    </ul>
+
+    <hr>
+
+    <h2>我的待辦事項</h2>
+
+    <input class="UserInput">
+
+    <button onclick="AddItem()">
+        新增
+    </button>
+
+    <ul class="List"></ul>
+
+</div>
+
+<script>
+
+let TodoArray = [];
+
+function RemoveItem(btn){
+
+    let myList =
+    document.querySelector(".List");
+
+    let index =
+    Array.from(myList.children)
+    .indexOf(btn.parentNode);
+
+    TodoArray.splice(index,1);
+
+    SaveData();
+
+    myList.removeChild(btn.parentNode);
+}
+
+function SaveData(){
+
+    localStorage.setItem(
+        "TodoData",
+        JSON.stringify(TodoArray)
+    );
+
+}
+
+function AddItem(text=""){
+
+    let UserInput =
+    document.querySelector(".UserInput");
+
+    if(UserInput.value=="" && text==""){
+        return;
+    }
+
+    let myList =
+    document.querySelector(".List");
+
+    let li =
+    document.createElement("li");
+
+    myList.append(li);
+
+    let checkbox =
+    document.createElement("input");
+
+    checkbox.type="checkbox";
+    checkbox.className="checkbox";
+
+    li.append(checkbox);
+
+    let todo =
+    document.createElement("div");
+
+    todo.className="todoItem";
+
+    if(text!=""){
+        todo.textContent=text;
+    }
+    else{
+        todo.textContent=
+        UserInput.value;
+    }
+
+    li.append(todo);
+
+    let btn =
+    document.createElement("button");
+
+    btn.textContent="刪除";
+
+    li.append(btn);
+
+    btn.addEventListener(
+        "click",
+        RemoveItem.bind(null,btn)
+    );
+
+    if(text==""){
+        TodoArray.push(todo.textContent);
+        SaveData();
+    }
+
+    UserInput.value="";
+}
+
+function LoadData(){
+
+    let data =
+    JSON.parse(
+        localStorage.getItem("TodoData")
+    );
+
+    if(data==null){
+        return;
+    }
+
+    TodoArray=data;
+
+    for(let i=0;i<data.length;i++){
+
+        AddItem(data[i]);
+
+    }
+
+}
+
+LoadData();
+
+</script>
+
+</body>
+
+</html>
